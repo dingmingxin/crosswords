@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html>
+<title>Crosswords</title>
+<head>
+<meta charset="utf-8">
+<link href='https://fonts.googleapis.com/css?family=PT+Mono' rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/css?family=Merriweather:400,300' rel='stylesheet' type='text/css'>
+<style>
+#crossword {
+    text-align:center;
+	font-family: 'Merriweather', serif;
+	font-size: 15px;
+}
+
+.crossword {
+    border-collapse:collapse;
+    font-family: 'PT Mono', "Courier New", Courier, monospace;
+	font-weight: bold;
+    margin-left:auto;
+    margin-right:auto;
+    clear:both;
+    margin-top:10px;
+    margin-bottom:10px;
+	border:3px solid #e8e8e8;
+}
+
+.crossword td {
+    border:3px solid black;
+    padding:0;
+    margin:0;
+    vertical-align:middle;
+    padding:0;
+    text-align:center;
+    width:25px;
+    height:25px;
+}
+.crossword .no-border {
+    border:none;
+	background: #e8e8e8;
+}
+
+.titles {
+	text-align: center;
+	padding: 15px;
+}
+
+#clues {
+	font-family: 'Merriweather', serif;
+    margin:auto;
+}
+h1, h3 {
+	font-family: 'Merriweather', serif;
+    margin:auto;
+	line-height: 20px;
+}
+
+#clues {
+    border-spacing: 150px 0px;
+}
+#clues td {
+    vertical-align:top;
+}
+* {
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: normal;
+  font-size: 12px;
+  color: #000000;
+  line-height: 1.5em;
+  background-color: #eeeeee;
+}
+
+.wrapper {
+  width: 100%;
+  text-align: center;
+}
+
+.container {
+  text-align: left;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.header-main {
+  display: block;
+  width: 100%;
+  height: 80px;
+  line-height: 40px;
+  text-align: center;
+  border: 1px solid #dddddd;
+  background-color: #ffffff;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  margin: 0 0 20px 0;
+  padding: 20px;
+}
+
+.main {
+  word-wrap: break-word;
+  border: 1px solid #dddddd;
+  background-color: #ffffff;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  padding: 20px;
+}
+#number {
+	font-family: 'Lato', sans-serif;
+	font-size: 18px;
+	font-weight: bold;
+	appearance: none;
+	padding: 10px;
+}
+#numberText {
+	font-size: 18px;
+	padding-top: 10px;
+}
+button {
+	border: 2px solid;
+	line-height: 26px;
+	background-color: black;
+	width: 180px;
+	margin-top:30px;
+	color: white;
+	font-family: 'Lato', sans-serif;
+	font-size: 18px;
+	font-weight: bold;
+	padding: 10px;
+}
+input[type=range] {
+  -webkit-appearance: none;
+}
+input[type=range]:focus {
+  outline: none;
+}
+input[type=range]::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 11.3px;
+  cursor: pointer;
+  box-shadow: 0px 0px 0.3px #000000, 0px 0px 0px #0d0d0d;
+  background: #000000;
+  border-radius: 1px;
+  border: 1.1px solid #000000;
+}
+input[type=range]::-webkit-slider-thumb {
+  box-shadow: 2.6px 2.6px 3.7px #000000, 0px 0px 2.6px #0d0d0d;
+  border: 2.5px solid #ffffff;
+  height: 23px;
+  width: 23px;
+  border-radius: 22px;
+  background: #ffffff;
+  cursor: pointer;
+  -webkit-appearance: none;
+  margin-top: -6.95px;
+}
+input[type=range]:focus::-webkit-slider-runnable-track {
+  background: #050505;
+}
+input[type=range]::-moz-range-track {
+  width: 100%;
+  height: 11.3px;
+  cursor: pointer;
+  box-shadow: 0px 0px 0.3px #000000, 0px 0px 0px #0d0d0d;
+  background: #000000;
+  border-radius: 1px;
+  border: 1.1px solid #000000;
+}
+input[type=range]::-moz-range-thumb {
+  box-shadow: 2.6px 2.6px 3.7px #000000, 0px 0px 2.6px #0d0d0d;
+  border: 2.5px solid #ffffff;
+  height: 23px;
+  width: 23px;
+  border-radius: 22px;
+  background: #ffffff;
+  cursor: pointer;
+}
+input[type=range]::-ms-track {
+  width: 100%;
+  height: 11.3px;
+  cursor: pointer;
+  background: transparent;
+  border-color: transparent;
+  color: transparent;
+}
+input[type=range]::-ms-fill-lower {
+  background: #000000;
+  border: 1.1px solid #000000;
+  border-radius: 2px;
+  box-shadow: 0px 0px 0.3px #000000, 0px 0px 0px #0d0d0d;
+}
+input[type=range]::-ms-fill-upper {
+  background: #000000;
+  border: 1.1px solid #000000;
+  border-radius: 2px;
+  box-shadow: 0px 0px 0.3px #000000, 0px 0px 0px #0d0d0d;
+}
+input[type=range]::-ms-thumb {
+  box-shadow: 2.6px 2.6px 3.7px #000000, 0px 0px 2.6px #0d0d0d;
+  border: 2.5px solid #ffffff;
+  height: 23px;
+  width: 23px;
+  border-radius: 22px;
+  background: #ffffff;
+  cursor: pointer;
+  height: 11.3px;
+}
+input[type=range]:focus::-ms-fill-lower {
+  background: #000000;
+}
+input[type=range]:focus::-ms-fill-upper {
+  background: #050505;
+}
+</style></head><body>
+<div id="wrapper" class="wrapper">
+  <div id="container" class="container">
+    <header id="header-main" class="header-main no-print" role="banner">
+      <h1>Crosswords</h1>
+	  <h3>from the NYT archive</h3>
+    </header>
+    <div id="crosswords" class="main two-column">
+		<div id="crossword">To create your crossword, choose the number of words:</br><input id="number" type="range" min="10" max="100" step="1" /><output for="number" id="numberText">50</output></br><button id="generate">generate</button></div></div>
+	  </br>
+		<div id="clues-wrapper">
+			<div id="clues-header"></div><table id="clues"></table>
+		</div>
+    </div>
+  </div>
+</div>
+</body>
+<script type="text/javascript" src="crossword.js"></script>
+</html>
