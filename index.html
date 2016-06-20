@@ -113,15 +113,19 @@ html, body {
   padding: 20px;
 }
 #number {
-	font-family: 'Lato', sans-serif;
+	font-family: 'Merriweather', serif;
 	font-size: 18px;
 	font-weight: bold;
 	appearance: none;
 	padding: 10px;
+	width:220px;
 }
 #numberText {
 	font-size: 18px;
 	padding-top: 10px;
+    padding-left: 10px;
+    width: 35px;
+    position: absolute;
 }
 button {
 	border: 2px solid;
@@ -130,7 +134,7 @@ button {
 	width: 180px;
 	margin-top:30px;
 	color: white;
-	font-family: 'Lato', sans-serif;
+	font-family: 'Merriweather', serif;
 	font-size: 18px;
 	font-weight: bold;
 	padding: 10px;
@@ -218,6 +222,84 @@ input[type=range]:focus::-ms-fill-lower {
 input[type=range]:focus::-ms-fill-upper {
   background: #050505;
 }
+.toggle {
+  position: absolute;
+  margin-left: -9999px;
+  visibility: hidden;
+}
+.toggle + label {
+  display: inline-block;
+  position: relative;
+  cursor: pointer;
+  outline: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+input.toggle-yes-no + label {
+  padding: 2px;
+  width: 220px;
+  height: 50px;
+  margin: 20px;
+}
+input.toggle-yes-no + label:before, input.toggle-yes-no + label:after {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  color: #fff;
+  font-size: 20px;
+  text-align: center;
+  line-height: 60px;
+}
+input.toggle-yes-no + label:before {
+  background-color: #AAAAAA;
+  content: attr(data-off);
+  -webkit-transition: -webkit-transform 0.5s;
+  -moz-transition: -moz-transform 0.5s;
+  -o-transition: -o-transform 0.5s;
+  transition: transform 0.5s;
+  -webkit-backface-visibility: hidden;
+  -moz-backface-visibility: hidden;
+  -ms-backface-visibility: hidden;
+  -o-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+input.toggle-yes-no + label:after {
+  background-color: #444444;
+  content: attr(data-on);
+  -webkit-transition: -webkit-transform 0.5s;
+  -moz-transition: -moz-transform 0.5s;
+  -o-transition: -o-transform 0.5s;
+  transition: transform 0.5s;
+  -webkit-transform: rotateY(180deg);
+  -moz-transform: rotateY(180deg);
+  -ms-transform: rotateY(180deg);
+  -o-transform: rotateY(180deg);
+  transform: rotateY(180deg);
+  -webkit-backface-visibility: hidden;
+  -moz-backface-visibility: hidden;
+  -ms-backface-visibility: hidden;
+  -o-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+input.toggle-yes-no:checked + label:before {
+  -webkit-transform: rotateY(180deg);
+  -moz-transform: rotateY(180deg);
+  -ms-transform: rotateY(180deg);
+  -o-transform: rotateY(180deg);
+  transform: rotateY(180deg);
+}
+input.toggle-yes-no:checked + label:after {
+  -webkit-transform: rotateY(0);
+  -moz-transform: rotateY(0);
+  -ms-transform: rotateY(0);
+  -o-transform: rotateY(0);
+  transform: rotateY(0);
+}
 </style></head><body>
 <div id="wrapper" class="wrapper">
   <div id="container" class="container">
@@ -226,7 +308,12 @@ input[type=range]:focus::-ms-fill-upper {
 	  <h3>from the NYT archive</h3>
     </header>
     <div id="crosswords" class="main two-column">
-		<div id="crossword">To create your crossword, choose the number of words:</br><input id="number" type="range" min="10" max="100" step="1" /><output for="number" id="numberText">50</output></br><button id="generate">generate</button></div></div>
+		<div id="crossword">To create your crossword, choose the number of words:</br><input id="number" type="range" min="10" max="100" step="1" /><output for="number" id="numberText">50</output></br></br>
+		<div>and then choose the source material for clues:</br>
+		<input id="toggle" class="toggle toggle-yes-no" type="checkbox">
+		<label for="toggle" data-on="The Guardian" data-off="New York Times"></label>
+		</div>
+		<button id="generate">generate</button></div></div>
 	  </br>
 		<div id="clues-wrapper">
 			<div id="clues-header"></div><table id="clues"></table>
