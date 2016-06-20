@@ -390,7 +390,8 @@ var CrosswordUtils = {
     toHtml : function(grid, show_answers){
         if(grid == null) return;
         var html = [];
-			html.push("<h1 class='titles'>Puzzle</h1>")
+			if (show_answers) html.push("<h1 class='titles'>Solution</h1>")
+				else html.push("<h1 class='titles'>Puzzle</h1>")
 			html.push("<table class='crossword'>");
 			var label = 1;
 			for(var r = 0; r < grid.length; r++){
@@ -445,11 +446,13 @@ function createCrossword(words, clues){
         return;
     }
 
-    var show_answers = true;
-    document.getElementById("crossword").innerHTML = CrosswordUtils.toHtml(grid, show_answers);
+    document.getElementById("crossword").innerHTML = CrosswordUtils.toHtml(grid, false);
 
     var legend = cw.getLegend(grid);
     addLegendToPage(legend);
+	
+	document.getElementById("solution").innerHTML = CrosswordUtils.toHtml(grid, true);
+	document.getElementById("solution").style.display = 'block'
 }
 
 function addLegendToPage(groups){
@@ -474,7 +477,7 @@ function nytimesClues(cluesCount) {
 	request.open('GET', 'data-nyt/' + file + '.json', true)
 	request.onload = function() {
 		if (request.status >= 200 && request.status < 400) {
-			data = JSON.parse(request.responseText)
+			var data = JSON.parse(request.responseText)
 			var usedItems = {}
 			for (var j = 0; j < cluesCount; j++) {
 				var item = Math.floor(Math.random() * data.length)
@@ -502,13 +505,16 @@ function guardianClues(cluesCount) {
 	request.open('GET', 'data-guardian/data' + file + '.json', true)
 	request.onload = function() {
 		if (request.status >= 200 && request.status < 400) {
-			data = JSON.parse(request.responseText)
+			var data = JSON.parse(request.responseText)
 			var usedItems = {}
 			for (element in data) {
-				var item = Math.floor(Math.random() * data.length)
-				while (usedItems[item]) item = Math.floor(Math.random() * data.length)
+				var item = Math.floor(Math.random() * Object.keys(data).length)
+				
+				while (usedItems[item]) item = Math.floor(Math.random() * Object.keys(data).length)
 				usedItems[item] = true
-				clues.push(data[element])
+				var clue = data[element][Math.floor(Math.random() * data[element].length)]
+				
+				clues.push(clue)
 				words.push(element)
 				if (clues.length == cluesCount) {
 					createCrossword(words, clues)
