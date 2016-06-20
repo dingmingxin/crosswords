@@ -7,7 +7,7 @@ Create [beautiful crosswords](https://monolithpl.github.io/crosswords) from rand
 - elegant, responsive layout
 
 ### screenshot / example
-![screenshot](http://monolithpl.github.io/half-a-crossword/screenshot.png "screenshot")
+![screenshot](http://monolithpl.github.io/crosswords/crosswords.png "screenshot")
 
 ### demo
 [check it out here](https://monolithpl.github.io/crosswords)
