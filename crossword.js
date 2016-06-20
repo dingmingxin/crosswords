@@ -504,12 +504,12 @@ function guardianClues(cluesCount) {
 		if (request.status >= 200 && request.status < 400) {
 			data = JSON.parse(request.responseText)
 			var usedItems = {}
-			for (var j = 0; j < cluesCount; j++) {
+			for (element in data) {
 				var item = Math.floor(Math.random() * data.length)
 				while (usedItems[item]) item = Math.floor(Math.random() * data.length)
 				usedItems[item] = true
-				clues.push(data[item].clue)
-				words.push(data[item].answer)
+				clues.push(data[element])
+				words.push(element)
 				if (clues.length == cluesCount) {
 					createCrossword(words, clues)
 					break
