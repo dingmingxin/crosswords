@@ -499,7 +499,7 @@ function guardianClues(cluesCount) {
 	var file = Math.floor(Math.random() * fileCount + 1)
 	
 	var request = new XMLHttpRequest()
-	request.open('GET', 'data-guardian/' + file + '.json', true)
+	request.open('GET', 'data-guardian/data' + file + '.json', true)
 	request.onload = function() {
 		if (request.status >= 200 && request.status < 400) {
 			data = JSON.parse(request.responseText)
