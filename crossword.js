@@ -464,14 +464,42 @@ function addLegendToPage(groups){
     }
 }
 
-nytimesClues = function nytimesClues(cluesCount) {
+function nytimesClues(cluesCount) {
 	const fileCount = 864
 	var clues = []
 	var words = []
 	var file = Math.floor(Math.random() * fileCount + 1)
 	
 	var request = new XMLHttpRequest()
-	request.open('GET', 'data/' + file + '.json', true)
+	request.open('GET', 'data-nyt/' + file + '.json', true)
+	request.onload = function() {
+		if (request.status >= 200 && request.status < 400) {
+			data = JSON.parse(request.responseText)
+			var usedItems = {}
+			for (var j = 0; j < cluesCount; j++) {
+				var item = Math.floor(Math.random() * data.length)
+				while (usedItems[item]) item = Math.floor(Math.random() * data.length)
+				usedItems[item] = true
+				clues.push(data[item].clue)
+				words.push(data[item].answer)
+				if (clues.length == cluesCount) {
+					createCrossword(words, clues)
+					break
+				}
+			}
+		}
+	}
+	request.send()
+}
+
+function guardianClues(cluesCount) {
+	const fileCount = 145
+	var clues = []
+	var words = []
+	var file = Math.floor(Math.random() * fileCount + 1)
+	
+	var request = new XMLHttpRequest()
+	request.open('GET', 'data-guardian/' + file + '.json', true)
 	request.onload = function() {
 		if (request.status >= 200 && request.status < 400) {
 			data = JSON.parse(request.responseText)
@@ -496,5 +524,8 @@ document.getElementById('number').addEventListener("input", function() {
     document.getElementById('numberText').value =  document.getElementById('number').value
 })
 document.getElementById('generate').addEventListener("click", function() {
-    nytimesClues(document.getElementById('number').value)
+	if (document.getElementById('toggle').checked == false)
+		nytimesClues(document.getElementById('number').value)
+	else
+		guardianClues(document.getElementById('number').value)
 });
