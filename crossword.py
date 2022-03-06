@@ -1,11 +1,19 @@
 import random
 import math
+import logging
 
 class CrosswordCell(object):
     def __init__(self, letter):
         self.char = letter
         self.across = None
         self.down = None
+    def set_direction_node(self, direction, cell_node):
+        if direction == "across":
+            self.across = cell_node
+        else:
+            self.down = cell_node
+    def __repr__(self):
+        return self.char
 
 class CrosswordCellNode(object):
     def __init__(self, is_start_of_word, index):
@@ -16,6 +24,8 @@ class WordElement(object):
     def __init__(self, word, index):
         self.word = word # the actual word
         self.index = index # use to map this node to its word or clue
+    def __repr__(self):
+        return self.word
 
 GRID_ROWS = 50
 GRID_COLS = 50
@@ -35,7 +45,7 @@ class Crossword(object):
             self.grid[i] = [None] * GRID_COLS
 
         # build the element list (need to keep track of indexes in the originial input arrays)
-        words_in.sort(key = len)
+        words_in.sort(key = len, reverse=True)
         self.word_elements = []
         for i in range(len(words_in)):
             self.word_elements.append(WordElement(words_in[i], i))
@@ -85,7 +95,7 @@ class Crossword(object):
             # as we go, we try to place each word in the group onto the grid
             # if the word can't go on the grid, we add that word to the next group 
             groups = []
-            groups.append(self.word_elements.slice(1))
+            groups.append(self.word_elements[1:])
             for g in range(len(groups)):
                 word_has_been_added_to_grid = False
                 # try to add all the words in this group to the grid
@@ -103,14 +113,14 @@ class Crossword(object):
                         r = best_position["row"]
                         c = best_position["col"]
                         dir = best_position['direction']
-                        placeWordAt(word_element.word, word_element.index, r, c, dir)
+                        self.placeWordAt(word_element.word, word_element.index, r, c, dir)
                         word_has_been_added_to_grid = True
                 # if we haven't made any progress, there is no point in going on to the next group
                 if not word_has_been_added_to_grid:
                     break
             # no need to try again
             if  word_has_been_added_to_grid:
-                return minimizeGrid()
+                return self.minimizeGrid()
 
         bad_words = groups[len(groups) - 1]
         return None
@@ -151,7 +161,7 @@ class Crossword(object):
         c_max = 0
 
         for r in range(GRID_ROWS):
-            for c in GRID_COLS:
+            for c in range(GRID_COLS):
                 cell = self.grid[r][c]
                 if cell != None:
                     if r < r_min:
@@ -189,7 +199,7 @@ class Crossword(object):
             self.grid[r][c] = CrosswordCell(char)
 
             # init the char_index for that character if needed
-            if not self.char_index[char]:
+            if not char in self.char_index:
                 self.char_index[char] = []
 
             # add to index
@@ -198,7 +208,8 @@ class Crossword(object):
         is_start_of_word = 0
         index_of_char == 0
 
-        self.grid[r][c][direction] = CrosswordCellNode(is_start_of_word, index_of_word_in_input_list)
+        #logging.debug("addcellToGrid %s %s %s", self.grid[r][c], word, direction)
+        self.grid[r][c].set_direction_node(direction, CrosswordCellNode(is_start_of_word, index_of_word_in_input_list))
 
     # place the word at the row and col indicated (the first char goes there)
     # the next chars go to the right (across) or below (down), depending on the direction
@@ -228,12 +239,13 @@ class Crossword(object):
         if self.grid[row][col] == None:
             return 0
         # intersection!
-        if self.grid[row][col]['char'] == char:
+        if self.grid[row][col].char == char:
             return 1
-        return False
+        return -1
 
     # determines if you can place a word at the row, column in the direction
     def canPlaceWordAt(self, word, row, col, direction):
+        #logging.debug("canPlaceCharAt == %s %i %i %s", word, row, col, direction)
         # out of bounds
         if row < 0 or row >= len(self.grid) or col < 0 or col >= len(self.grid[row]):
             return False
@@ -241,12 +253,15 @@ class Crossword(object):
         if direction == "across":
             # out of bounds (word too long)
             if col + len(word) > len(self.grid[row]):
+                #logging.debug("canplayce word at return none 1")
                 return False
             # can't have a word directly to the left
             if col - 1 >= 0 and self.grid[row][col - 1] != None:
+                #logging.debug("canplayce word at return none 2")
                 return False
             # can't have word directly to the right
             if col + len(word) < len(self.grid[row]) and self.grid[row][col+len(word)] != None:
+                #logging.debug("canplayce word at return none 3")
                 return False
 
             # check the row above to make sure there isn't another word
@@ -258,9 +273,10 @@ class Crossword(object):
                 if r<0:
                     break
                 is_empty = self.grid[r][c] == None
-                is_intersection = self.grid[row][c] != None and self.grid[row][c]['char'] == word[i:i+1]
+                is_intersection = self.grid[row][c] != None and self.grid[row][c].char == word[i:i+1]
                 can_place_here = is_empty or is_intersection
                 if not can_place_here:
+                    #logging.debug("canplayce word at return none 4")
                     return False
                 i += 1
 
@@ -271,9 +287,10 @@ class Crossword(object):
                 if r>=len(self.grid):
                     break
                 is_empty = self.grid[r][c] == None
-                is_intersection = self.grid[row][c] != None and self.grid[row][c]['char'] == word[i:i+1]
+                is_intersection = self.grid[row][c] != None and self.grid[row][c].char == word[i:i+1]
                 can_place_here = is_empty or is_intersection
                 if not can_place_here:
+                    #logging.debug("canplayce word at return none 5")
                     return False
                 i += 1
 
@@ -283,7 +300,8 @@ class Crossword(object):
             i = 0
             for c in range(col, col+len(word)):
                 result = self.canPlaceCharAt(word[i:i+1], row, c)
-                if result == False:
+                if result == -1:
+                    #logging.debug("canplayce word at return none 6 %s", result)
                     return False
                 intersections += result
                 i += 1
@@ -309,7 +327,7 @@ class Crossword(object):
                 if c<0:
                     break
                 is_empty = self.grid[r][c] == None
-                is_intersection = self.grid[r][col] != None and self.grid[r][col]['char'] == word[i:i+1]
+                is_intersection = self.grid[r][col] != None and self.grid[r][col].char == word[i:i+1]
                 can_place_here = is_empty or is_intersection
                 if not can_place_here:
                     return False
@@ -322,7 +340,7 @@ class Crossword(object):
                 if c>=len(self.grid[r]):
                     break
                 is_empty = self.grid[r][c] == None
-                is_intersection = self.grid[r][col] != None and self.grid[r][col]['char'] == word[i:i+1]
+                is_intersection = self.grid[r][col] != None and self.grid[r][col].char == word[i:i+1]
                 can_place_here = is_empty or is_intersection
                 if not can_place_here:
                     return False
@@ -335,7 +353,7 @@ class Crossword(object):
             i = 0
             for row in range(row, row+len(word)):
                 result = self.canPlaceCharAt(word[i:i+1], r, col)
-                if result == False:
+                if result == -1:
                     return False
                 intersections += result
                 i += 1
@@ -344,7 +362,8 @@ class Crossword(object):
             pass
             # todo
             #throw "Invalid Direction"
-        return intersections
+        #logging.debug("canPlaceWordAt --- %i", intersections)
+        return True
 
     def randomDirection(self):
         if math.floor(random.random()*2) == 0:
@@ -356,8 +375,10 @@ class Crossword(object):
         # check the char_index for every letter, and see if we can put it there in a direction
         bests = []
         for i in range(len(word)):
-            possible_locations_on_grid = self.char_index[word[i:i+1]]
-            if not possible_locations_on_grid:
+            char = word[i:i+1]
+            if char in self.char_index:
+                possible_locations_on_grid = self.char_index[word[i:i+1]]
+            else:
                 continue
 
             for j in range(len(possible_locations_on_grid)):
