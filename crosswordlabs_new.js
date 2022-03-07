@@ -496,12 +496,12 @@ var cw = new Crossword(words, clues, seed);
 var tries = 10; 
 //var grid = cw.getSquareGrid(tries);
 //var grid = cw.getGridGreedy(tries);
-var grid = cw.getGridWithMaximizedIntersections(10, 100)
-function print_grid(grid) {
-    for(var r=0; r<grid.length; r++) {
+var grid1 = cw.getGridWithMaximizedIntersections(10, 100)
+function print_grid(ggg) {
+    for(var r=0; r<ggg.length; r++) {
         row = []
-        for(var c=0; c<grid.length; c++) {
-            var cell = grid[r][c]
+        for(var c=0; c<ggg[r].length; c++) {
+            var cell = ggg[r][c]
             if(cell == null) {
                 row.push(".")
             }
@@ -513,6 +513,6 @@ function print_grid(grid) {
     }
 }
 
-print_grid(grid);
+print_grid(grid1);
         
 //console.log(grid)

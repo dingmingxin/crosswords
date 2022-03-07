@@ -98,7 +98,7 @@ function Crossword(words_in, clues_in){
             }
             // no need to try again
             if(word_has_been_added_to_grid) {
-                print_grid(grid)
+                //print_grid(grid)
                 return minimizeGrid();  
             }
         }
@@ -394,7 +394,7 @@ var grid = cw.getSquareGrid(tries);
 function print_grid(grid) {
     for(var r=0; r<grid.length; r++) {
         row = []
-        for(var c=0; c<grid.length; c++) {
+        for(var c=0; c<grid[r].length; c++) {
             var cell = grid[r][c]
             if(cell == null) {
                 row.push(".")
