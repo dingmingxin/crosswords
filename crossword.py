@@ -202,7 +202,7 @@ class Crossword(object):
                 i += 1
         else: 
             pass
-    def canPlaceCharAt(self, char, row, col, word_intersection):
+    def canPlaceCharAt(self, char, row, col, word_intersections):
         word_cell = self.grid[row][col]
         if None == word_cell:
             return 0
