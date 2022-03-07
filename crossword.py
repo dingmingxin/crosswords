@@ -202,10 +202,26 @@ class Crossword(object):
                 i += 1
         else: 
             pass
-    def canPlaceCharAt(self, char, row, col):
-        if self.grid[row][col] == None:
+    def canPlaceCharAt(self, char, row, col, word_intersection):
+        word_cell = self.grid[row][col]
+        if None == word_cell:
             return 0
-        if self.grid[row][col].char == char:
+        if word_cell.char == char:
+            across_word_index = None 
+            down_word_index = None
+            if word_cell.across != None:
+                across_word_index = word_cell.across.index
+            if word_cell.down != None:
+                down_word_index = word_cell.down.index
+
+            if across_word_index != None and across_word_index in word_intersections:
+                return -1
+
+            if down_word_index != None and down_word_index in word_intersections:
+                return -1
+
+            word_intersections[across_word_index] = True
+            word_intersections[down_word_index] = True
             return 1
         return -1
 
@@ -213,6 +229,8 @@ class Crossword(object):
         #logging.debug("canPlaceCharAt == %s %i %i %s", word, row, col, direction)
         if row < 0 or row >= len(self.grid) or col < 0 or col >= len(self.grid[row]):
             return False
+
+        word_intersections = {}
 
         if direction == "across":
             if col + len(word) > len(self.grid[row]):
@@ -249,7 +267,7 @@ class Crossword(object):
             intersections = 0
             i = 0
             for c in range(col, col+len(word)):
-                result = self.canPlaceCharAt(word[i:i+1], row, c)
+                result = self.canPlaceCharAt(word[i:i+1], row, c, word_intersections)
                 if result == -1:
                     return False
                 intersections += result
@@ -291,7 +309,7 @@ class Crossword(object):
             intersections = 0
             i = 0
             for row in range(row, row+len(word)):
-                result = self.canPlaceCharAt(word[i:i+1], r, col)
+                result = self.canPlaceCharAt(word[i:i+1], r, col, word_intersections)
                 if result == -1:
                     return False
                 intersections += result
@@ -299,7 +317,10 @@ class Crossword(object):
 
         else:
             pass
-        return True
+        if intersections == len(word):
+            return False
+        else:
+            return True
 
     def randomDirection(self):
         if math.floor(random.random()*2) == 0:
