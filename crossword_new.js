@@ -380,8 +380,10 @@ function Crossword(words_in, clues_in){
 //}
 
 
-var words = ['ДУХ', 'УХО', 'УХОД', 'ХОД']
-var clues = ['ДУХ', 'УХО', 'УХОД', 'ХОД']
+//var words = ['ДУХ', 'УХО', 'УХОД', 'ХОД']
+//var clues = ['ДУХ', 'УХО', 'УХОД', 'ХОД']
+var words = ['ДНО', 'ДОН', 'ФОН', 'ФОНД']
+var clues = ['ДНО', 'ДОН', 'ФОН', 'ФОНД']
 console.log(words)
 
 var seed = new Date().getTime();
