@@ -92,38 +92,48 @@ class Crossword(object):
                 self.bad_words = [word_element]
                 return None
 
-            groups = []
-            groups.append(self.word_elements[1:])
-            for g in range(len(groups)):
-                word_has_been_added_to_grid = False
-                for i in range(len(groups[g])):
-                    word_element = groups[g][i]
-                    best_position = self.findPositionForWord(word_element.word)
+            left_words = copy.deepcopy(self.word_elements[1:])
+            left_words_try_count = {}
+            max_try_count_per_word = 20 # 每个单词最大尝试次数
 
-                    if not best_position: 
-                        if len(groups) - 1 == g:
-                            groups.append([])
-                        groups[g+1].append(word_element)
-                    else: 
-                        r = best_position["row"]
-                        c = best_position["col"]
-                        dir = best_position['direction']
-                        self.placeWordAt(word_element.word, word_element.index, r, c, dir)
-                        word_has_been_added_to_grid = True
-                if not word_has_been_added_to_grid:
+            while True:
+                if len(left_words) == 0:
                     break
-            if  word_has_been_added_to_grid:
-                ggg = copy.deepcopy(self.grid)
-                ggg = self.pretty_grid(ggg, True)
-                print("----------------------------------------")
-                for r in ggg:
-                    print(",".join(r))
-                print("----------------------------------------")
+                word_element = left_words.pop(0)
+                word_str = word_element.word
+                best_position = self.findPositionForWord(word_str)
 
-                return self.minimizeGrid()
+                if not best_position: 
+                    left_words.append(word_element)
+                    if not word_str in left_words_try_count:
+                        left_words_try_count[word_str] = 0
+                    else:
+                        left_words_try_count[word_str] += 1
+                else: 
+                    r = best_position["row"]
+                    c = best_position["col"]
+                    dir = best_position['direction']
+                    self.placeWordAt(word_str, word_element.index, r, c, dir)
+                    if word_str in left_words_try_count:
+                        del left_words_try_count[word_str]
+                
+                # check try count; prevent unfinished loop
+                if len(left_words) != 0 and len(left_words_try_count) == len(left_words):
+                    max_try_words_count = 0
+                    for w, count in left_words_try_count.items():
+                        if count >= max_try_count_per_word:
+                            max_try_words_count += 1
+                    if max_try_words_count == len(left_words):
+                        break
 
-        self.bad_words = groups[len(groups) - 1]
-        return None
+            if len(left_words) == 0:
+                break
+            self.bad_words = left_words
+
+        if len(self.bad_words) > 0:
+            return None
+        else:
+            return self.minimizeGrid()
 
     def getBadWords(self):
         return self.bad_words
@@ -321,7 +331,7 @@ class Crossword(object):
         for i in range(len(word)):
             char = word[i:i+1]
             if char in self.char_index:
-                possible_locations_on_grid = self.char_index[word[i:i+1]]
+                possible_locations_on_grid = self.char_index[char]
             else:
                 continue
 
