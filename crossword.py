@@ -88,7 +88,7 @@ class Crossword(object):
             if self.canPlaceWordAt(word_element.word, r, c, start_dir) != False:
                 self.placeWordAt(word_element.word, word_element.index, r, c, start_dir)
             else:
-                bad_words = [word_element]
+                self.bad_words = [word_element]
                 return None
 
             groups = []
@@ -114,11 +114,11 @@ class Crossword(object):
             if  word_has_been_added_to_grid:
                 return self.minimizeGrid()
 
-        bad_words = groups[len(groups) - 1]
+        self.bad_words = groups[len(groups) - 1]
         return None
 
     def getBadWords(self):
-        return bad_words
+        return self.bad_words
 
     def getLegend(self, grid):
         groups = {"across" : [], "down" : []}
@@ -308,7 +308,7 @@ class Crossword(object):
 
             intersections = 0
             i = 0
-            for row in range(row, row+len(word)):
+            for r in range(row, row+len(word)):
                 result = self.canPlaceCharAt(word[i:i+1], r, col, word_intersections)
                 if result == -1:
                     return False

@@ -19,5 +19,8 @@ cw = Crossword(words, clues)
 
 tries = 10
 grid = cw.getSquareGrid(tries)
-print(grid)
+print("----------------------------------------")
+for r in grid:
+    print(",".join(r))
+print("----------------------------------------")
 
