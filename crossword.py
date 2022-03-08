@@ -58,7 +58,7 @@ class Crossword(object):
         best_ratio = 0
 
         for i in range(max_tries):
-            a_grid = self.getGrid(1)
+            a_grid, intersections = self.getGrid(1)
             if a_grid == None:
                 continue
             ratio = min(len(a_grid), len(a_grid[0])) * 1.0 / max(len(a_grid), len(a_grid[0]))
@@ -71,9 +71,29 @@ class Crossword(object):
         # logging.debug("getSquareGrid %s", best_grid)
         return self.pretty_grid(best_grid, only_words)
 
+    def getGridWithMaximizedIntersections(self, best_of, max_tries): 
+        best_grid = None
+        best_intersections = -1
+        generated_count = 0
+        for i in range(max_tries):
+            random.shuffle(self.word_elements)
+            a_grid, grid_intersections = self.getGrid(1)
+            if a_grid == None:
+                continue
+            generated_count += 1
+
+
+            if grid_intersections > best_intersections:
+                best_grid = a_grid
+                best_intersections = grid_intersections
+
+            if best_grid and generated_count == best_of:
+                return self.pretty_grid(best_grid)
+        return self.pretty_grid(best_grid)
+
     def getGrid(self, max_tries):
         if not self.word_elements[0]:
-            return None
+            return None, 0
         for tries in range(max_tries):
             self.clear() 
 
@@ -90,12 +110,12 @@ class Crossword(object):
                 self.placeWordAt(word_element.word, word_element.index, r, c, start_dir)
             else:
                 self.bad_words = [word_element]
-                return None
+                return None, 0
 
             left_words = copy.deepcopy(self.word_elements[1:])
             left_words_try_count = {}
-            max_try_count_per_word = 20 # 每个单词最大尝试次数
-
+            max_try_count_per_word = 50 # 每个单词最大尝试次数
+            total_intersections = 0
             while True:
                 if len(left_words) == 0:
                     break
@@ -110,6 +130,7 @@ class Crossword(object):
                     else:
                         left_words_try_count[word_str] += 1
                 else: 
+                    total_intersections += best_position["intersections"]
                     r = best_position["row"]
                     c = best_position["col"]
                     dir = best_position['direction']
@@ -123,17 +144,16 @@ class Crossword(object):
                     for w, count in left_words_try_count.items():
                         if count >= max_try_count_per_word:
                             max_try_words_count += 1
+                    # 所有单词都超过最大尝试次数了
                     if max_try_words_count == len(left_words):
                         break
 
-            if len(left_words) == 0:
-                break
             self.bad_words = left_words
 
         if len(self.bad_words) > 0:
-            return None
+            return None, 0
         else:
-            return self.minimizeGrid()
+            return self.minimizeGrid(), total_intersections
 
     def getBadWords(self):
         return self.bad_words
@@ -352,7 +372,6 @@ class Crossword(object):
 
         random.shuffle(bests)
         best = bests[0]
-        #best = bests[math.floor(random.random()*len(bests))]
 
         return best
 
@@ -363,6 +382,8 @@ class Crossword(object):
         self.char_index = {}
 
     def pretty_grid(self, grid, raw = True):
+        if grid == None:
+            return None
         for r in range(len(grid)):
             for c in range(len(grid[r])):
                 if grid[r][c] == None:

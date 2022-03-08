@@ -383,16 +383,24 @@ function Crossword(words_in, clues_in){
 //var words = ['ДУХ', 'УХО', 'УХОД', 'ХОД']
 //var clues = ['ДУХ', 'УХО', 'УХОД', 'ХОД']
 var words = ['ДНО', 'ДОН', 'ФОН', 'ФОНД']
-var clues = ['ДНО', 'ДОН', 'ФОН', 'ФОНД']
-console.log(words)
+var all_questions = []
+all_questions.push(['КОТ', 'ТОК'])
+all_questions.push(['БАР', 'БРА', 'РАБ'])
+all_questions.push(['МУЖ', 'УЖ', 'УМ'])
+all_questions.push(['ОПТ', 'ПОТ', 'ТОП'])
+all_questions.push(['ДУХ', 'УХО', 'УХОД', 'ХОД'])
+all_questions.push(['ЗАЛ', 'ЗОЛА', 'ЛАЗ'])
+all_questions.push(['ДНО', 'ДОН', 'ФОН', 'ФОНД'])
+all_questions.push(['МАРШ', 'ШАР', 'ШАРМ', 'ШРАМ'])
+all_questions.push(['КОТ', 'СКОТ', 'СОК', 'СТОК', 'ТОК'])
+all_questions.push(['ГРОМ', 'МОР', 'МОРГ', 'РОГ', 'РОМ'])
+all_questions.push(['ЛЕС', 'ОСЕЛ', 'СЕЛО'])
+all_questions.push(['ВОР', 'КРОВ', 'РОВ', 'РОК'])
+all_questions.push(['БУК', 'КЛУБ', 'КУБ', 'ЛУК'])
+all_questions.push(['РУИНА', 'РУНА', 'УРАН', 'УРНА'])
+all_questions.push(['БЕС', 'БРУС', 'БУР', 'РЕБУС', 'СЕРБ', 'СРУБ'])
+all_questions.push(['ДОМ', 'МОДА', 'ОДА'])
 
-var seed = new Date().getTime();
-var cw = new Crossword(words, clues);
-
-var tries = 10; 
-var grid = cw.getSquareGrid(tries);
-//var grid = cw.getGridGreedy(tries);
-//var grid = cw.getGridWithMaximizedIntersections(10, 100)
 function print_grid(grid) {
     for(var r=0; r<grid.length; r++) {
         row = []
@@ -409,4 +417,24 @@ function print_grid(grid) {
     }
 }
 
-print_grid(grid);
+for(var i=0; i<all_questions.length; i++) {
+    var words = all_questions[i];
+    var clues = all_questions[i];
+
+    var seed = new Date().getTime();
+    var cw = new Crossword(words, clues);
+
+    var tries = 10; 
+    var grid = cw.getSquareGrid(tries);
+    //var grid = cw.getGridGreedy(tries);
+    //var grid = cw.getGridWithMaximizedIntersections(10, 100)
+    console.log("==================================")
+    if(null != grid) {
+        print_grid(grid);
+    } else {
+        console.log(i)
+        console.log(words);
+    }
+    console.log("==================================")
+}
+
